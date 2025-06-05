@@ -15,7 +15,7 @@
 - [Boost](https://www.boost.org/)
 - [OpenSSL](https://www.openssl.org/)
 - [nlohmann/json](https://github.com/nlohmann/json)
-- CMake 3.28+
+- CMake 3.30+
 
 ### Сборка
 ```sh
