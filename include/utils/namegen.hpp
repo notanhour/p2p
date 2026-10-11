@@ -1,5 +1,4 @@
-#ifndef NAMEGEN_HPP
-#define NAMEGEN_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -10,13 +9,25 @@ namespace namegen {
     inline std::string generate() {
         // Списки прилагательных и существительных
         static const std::vector<std::string> adjectives = {
-            "Quick", "Clever", "Brave", "Silent", 
-            "Wise", "Kind", "Loud", "Bright"
+            "Quick", "Clever", "Brave", "Silent",
+            "Wise", "Kind", "Loud", "Bright",
+            "Calm", "Quiet", "Bold", "Swift",
+            "Gentle", "Happy", "Lucky", "Keen",
+            "Agile", "Nimble", "Daring", "Proud",
+            "Honest", "Alert", "Loyal", "Noble",
+            "Patient", "Curious", "Friendly", "Playful",
+            "Lively", "Cheerful", "Hardy", "Steady"
         };
         
         static const std::vector<std::string> nouns = {
             "Fox", "Wolf", "Raven", "Sheep",
-            "Duck", "Knight", "Bear", "Cat"
+            "Duck", "Owl", "Bear", "Cat",
+            "Lynx", "Hare", "Deer", "Dog",
+            "Badger", "Moose", "Elk", "Horse",
+            "Panda", "Koala", "Tiger", "Lion",
+            "Zebra", "Leopard", "Falcon", "Hawk",
+            "Eagle", "Robin", "Crane", "Swan",
+            "Finch", "Lark", "Seal", "Dolphin"
         };
     
         // Инициализация генератора случайных чисел
@@ -30,5 +41,3 @@ namespace namegen {
     }
     
 }
-
-#endif

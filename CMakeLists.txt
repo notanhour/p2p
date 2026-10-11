@@ -1,38 +1,37 @@
 cmake_minimum_required(VERSION 3.30)
-cmake_policy(SET CMP0167 NEW) # Используем новую политику для поиска компонентов Boost
-
-project(P2P)
+project(p2p LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Находим необходимые пакеты
-find_package(Boost REQUIRED COMPONENTS system program_options CONFIG)
+find_package(Boost REQUIRED COMPONENTS program_options CONFIG)
 find_package(OpenSSL REQUIRED)
+find_package(nlohmann_json REQUIRED CONFIG)
 find_package(Threads REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(AVAHI REQUIRED IMPORTED_TARGET avahi-client)
 
-# Добавляем исполняемый файл
-add_executable(P2P
-    src/main.cpp
+add_library(p2p_core
     src/network/peer.cpp
     src/crypto/encryption.cpp
+    src/storage/state.cpp
 )
-
-# Флаг для использования localhost
-target_compile_definitions(P2P PRIVATE USE_LOCALHOST)
-
-# Подключаем директории
-target_include_directories(P2P PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${Boost_INCLUDE_DIRS}
-    ${OPENSSL_INCLUDE_DIR}
-)
-
-# Связываем библиотеки
-target_link_libraries(P2P PRIVATE
-    Boost::system
-    Boost::program_options
-    OpenSSL::SSL
+target_include_directories(p2p_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(p2p_core PUBLIC
+    Boost::headers
+    nlohmann_json::nlohmann_json
     OpenSSL::Crypto
     Threads::Threads
 )
+
+add_library(p2p_discovery src/network/discovery.cpp)
+target_include_directories(p2p_discovery PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(p2p_discovery PUBLIC Boost::headers Threads::Threads PRIVATE PkgConfig::AVAHI)
+
+add_executable(p2p src/main.cpp src/ui/terminal.cpp)
+target_link_libraries(p2p PRIVATE p2p_core p2p_discovery Boost::program_options)
+
+include(CTest)
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
